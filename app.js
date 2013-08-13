@@ -12,8 +12,9 @@ var baker = {
               this.cookieTray.push(type)
             },
             addToOven: function(oven, index) {
-              oven.batches.push(this.cookieTray.splice(index,1))
-              alert('Cookies in the oven')
+              var currentBatch = this.cookieTray.splice(index,1)[0]
+              oven.batches.push(currentBatch);
+              console.log(('Cookies in the oven'));
             }
 };
 
@@ -44,25 +45,45 @@ var oven = {
           }
 };
 
-// var snickerdoodle = new Cookie("snickerdoodle", 5)
-// // console.log("Cookie type is " + cookie.type + " and time is " + cookie.time)
-// // var oatmeal = new Cookie("oatmeal", 3)
-// var sugar = new Cookie("sugar", 2)
-// oven.batches = [ snickerdoodle]
-// oven.batches.push(sugar)
-baker.makeBatch("oatmeal", 4)
-// baker.addToOven(oven)
-baker.makeBatch("sugar", 2)
-// baker.addToOven(oven)
-baker.makeBatch("peanutbutter", 6)
-console.log(baker.cookieTray[0])
-baker.addToOven(oven, 1)
+$(document).ready(function(){
+  $('#new_batch').on("submit", function(event){
+    event.preventDefault();
+    var cookieType = $("input[name='batch_type']")
+    var bakeTime = $("input[name='bake_time']")
+    baker.makeBatch(cookieType.val(), bakeTime.val());
+    bakeTime.val("");
+    cookieType.val("");
+    $("#prep_batches").replaceWith("<li>" + baker.cookieTray[0].type + "</li>");
 
-// console.log(baker.cookieTray)
+    function cookieTray(cookies) {
+      for (var i=0; i < cookies.length; i++)
+      {
+        ["<li>" + cookies[i].type + "<form><input type=hidden value=" +
+        cookies[i].type + "/><input type=hidden value=" + cookie[i].time
+        }).appendTo('form') + "</form></li>"]
+      }
+
+  })
+
+
+
+
+
+
+
+});
+
+
+// baker.makeBatch("oatmeal", 4)
+// baker.makeBatch("sugar", 2)
+// baker.makeBatch("peanutbutter", 6)
+// baker.addToOven(oven, 1)
+// console.log(oven.batches)
 // oven.bakeBatch()
 // oven.bakeBatch()
 // oven.bakeBatch()
 // oven.bakeBatch()
 // oven.bakeBatch()
-console.log(oven.batches)
+// console.log(oven.batches)
+// how do we get the type back of a javascript object?
 

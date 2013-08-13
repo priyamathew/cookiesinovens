@@ -62,19 +62,21 @@ var prepTableView = {
     });
   },
   render: function(item) {
-    return ["<li>" + item.type + "<form class='prep-tray-item' data-time=" + item.time + "><input type='submit' value='Add to Oven'<form></li>"]
+    return ["<li>" + item.type + "<form class='prep_tray_item' name='prep_tray_item' data-type=" + item.type + " data-time=" + item.time + "><input type='submit' value='Add to Oven'<form></li>"]
   }
 };
 
 var ovenView = {
-  formSelector   : "#new_batch",
-  init: function() {
-    $(this.formSelector).on("submit", function(event){
+  formSelector : ".prep_tray_item",
+  init: function(){
+    console.log($(this.formSelector));
+    $('body').on("submit", this.formSelector, function(event){
       event.preventDefault();
-      var cookie = new Cookie($(prepTableView.batchTypeField).val(),$(prepTableView.batchTimeField).val())
-      prepTable.makeBatch(cookie);
-      prepTableView.clearFormFields();
-      $(prepTableView.listSelector).append(prepTableView.render(prepTable.tray[prepTable.lastItem()]));
+      var type = $(this).data("type")
+      var time = $(this).data("time")
+      console.log(type);
+      console.log(time);
+
     });
   },
   render: function(item) {
@@ -84,6 +86,7 @@ var ovenView = {
 
 $(document).ready(function(){
   prepTableView.init();
+  ovenView.init();
 });
 
 

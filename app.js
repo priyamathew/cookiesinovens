@@ -11,16 +11,17 @@ var prepTable = {
     this.tray.push(item)
   },
   addToOven: function(oven, index) {
-    var currentBatch = this.tray.splice(index,1)[0]
+    var currentBatch = findItemByIndex(index);
     oven.batches.push(currentBatch);
     console.log(('Food in the oven'));
   },
   lastItem: function() {
     return this.tray.length-1
+  },
+  findItemByIndex: function(index) {
+    return this.tray.splice(index,1)[0]
   }
 };
-console.log(prepTable.tray.length-1);
-console.log(prepTable.lastItem());
 
 var oven = {
   batches: [],
@@ -43,16 +44,21 @@ var oven = {
 };
 
 var prepTableView = {
+  formSelector   : "#new_batch",
+  listSelector   : "#prep_batches",
+  batchTypeField : "input[name='batch_type']",
+  batchTimeField : "input[name='bake_time']",
+  clearFormFields: function() {
+    $(this.batchTypeField).val("")
+    $(this.batchTimeField).val("")
+  },
   init: function() {
-    $('#new_batch').on("submit", function(event){
+    $(this.formSelector).on("submit", function(event){
       event.preventDefault();
-      var itemType = $("input[name='batch_type']")
-      var bakeTime = $("input[name='bake_time']")
-      var cookie = new Cookie(itemType.val(),bakeTime.val())
-      bakeTime.val("");
-      itemType.val("");
+      var cookie = new Cookie($(prepTableView.batchTypeField).val(),$(prepTableView.batchTimeField).val())
       prepTable.makeBatch(cookie);
-      $("#prep_batches").append(prepView.render(prepTable.tray[prepTable.lastItem()]));
+      prepTableView.clearFormFields();
+      $(prepTableView.listSelector).append(prepTableView.render(prepTable.tray[prepTable.lastItem()]));
     });
   },
   render: function(item) {

@@ -5,66 +5,67 @@ function Cookie(type, time){
   this.status = "raw"
 };
 
-var baker = {
-            cookieTray: [],
-            makeBatch: function(type, time) {
-              type = new Cookie(type,time)
-              this.cookieTray.push(type)
-            },
-            addToOven: function(oven, index) {
-              var currentBatch = this.cookieTray.splice(index,1)[0]
-              oven.batches.push(currentBatch);
-              console.log(('Cookies in the oven'));
-            }
+var prepTable = {
+  tray: [],
+  makeBatch: function(item) {
+    this.tray.push(item)
+  },
+  addToOven: function(oven, index) {
+    var currentBatch = this.tray.splice(index,1)[0]
+    oven.batches.push(currentBatch);
+    console.log(('Food in the oven'));
+  },
+  lastItem: function() {
+    return this.tray.length-1
+  }
 };
+console.log(prepTable.tray.length-1);
+console.log(prepTable.lastItem());
 
 var oven = {
+  batches: [],
 
-          batches: [],
+  bakeItems: function(batch) {
+    batch.timeInOven += 1;
+    if (batch.timeInOven < batch.time) {
+      batch.status = "still raw";
+    } else if (batch.timeInOven === batch.time) {
+      batch.status = "just right";
+    } else {
+      batch.status = "crispy";
+    }
+  },
+  bakeBatch: function() {
+    for (var i=0; i < this.batches.length; i++) {
+      this.bakeItems(this.batches[i]);
+    }
+  }
+};
 
-           bakeCookie: function(batch) {
-            batch.timeInOven += 1;
-            if (batch.timeInOven < batch.time)
-              {
-              batch.status = "still gooey";
-              }
-             else if (batch.timeInOven === batch.time)
-             {
-              batch.status = "just right";
-             }
-             else
-             {
-              batch.status = "crispy";
-             }
-           },
-          bakeBatch: function() {
-            for (var i=0; i < this.batches.length; i++)
-            {
-              this.bakeCookie(this.batches[i]);
-            }
-          }
+var prepView = {
+  render: function(item) {
+    return ["<li>" + item.type + "<form><input type='submit' value='Add to Oven'<form></li>"]
+  }
 };
 
 $(document).ready(function(){
   $('#new_batch').on("submit", function(event){
     event.preventDefault();
-    var cookieType = $("input[name='batch_type']")
+    var itemType = $("input[name='batch_type']")
     var bakeTime = $("input[name='bake_time']")
-    baker.makeBatch(cookieType.val(), bakeTime.val());
+    cookie = new Cookie(itemType.val(),bakeTime.val())
     bakeTime.val("");
-    cookieType.val("");
-    $("#prep_batches").replaceWith("<li>" + baker.cookieTray[0].type + "</li>");
-
-    function cookieTray(cookies) {
-      for (var i=0; i < cookies.length; i++)
-      {
-        ["<li>" + cookies[i].type + "<form><input type=hidden value=" +
-        cookies[i].type + "/><input type=hidden value=" + cookie[i].time
-        }).appendTo('form') + "</form></li>"]
-      }
-
+    itemType.val("");
+    prepTable.makeBatch(cookie);
+    $("#prep_batches").append(prepView.render(prepTable.tray[prepTable.lastItem()]));
   })
 
+  //
+
+   // prep_table.find_item(id)
+   // prep_table.delete_oite
+   // oven.add_item
+   // render.....
 
 
 

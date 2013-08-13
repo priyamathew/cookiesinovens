@@ -42,36 +42,26 @@ var oven = {
   }
 };
 
-var prepView = {
+var prepTableView = {
+  init: function() {
+    $('#new_batch').on("submit", function(event){
+      event.preventDefault();
+      var itemType = $("input[name='batch_type']")
+      var bakeTime = $("input[name='bake_time']")
+      var cookie = new Cookie(itemType.val(),bakeTime.val())
+      bakeTime.val("");
+      itemType.val("");
+      prepTable.makeBatch(cookie);
+      $("#prep_batches").append(prepView.render(prepTable.tray[prepTable.lastItem()]));
+    });
+  },
   render: function(item) {
     return ["<li>" + item.type + "<form><input type='submit' value='Add to Oven'<form></li>"]
   }
 };
 
 $(document).ready(function(){
-  $('#new_batch').on("submit", function(event){
-    event.preventDefault();
-    var itemType = $("input[name='batch_type']")
-    var bakeTime = $("input[name='bake_time']")
-    cookie = new Cookie(itemType.val(),bakeTime.val())
-    bakeTime.val("");
-    itemType.val("");
-    prepTable.makeBatch(cookie);
-    $("#prep_batches").append(prepView.render(prepTable.tray[prepTable.lastItem()]));
-  })
-
-  //
-
-   // prep_table.find_item(id)
-   // prep_table.delete_oite
-   // oven.add_item
-   // render.....
-
-
-
-
-
-
+  prepTableView.init();
 });
 
 
